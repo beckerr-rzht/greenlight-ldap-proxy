@@ -43,8 +43,8 @@ LDAP_PASSWORD=password
 #LDAP_ROLE_FIELD=ou
 
 # LDAP Backend Server and optional LDAP Backend Filter
-LDAP_BACKEND_URI=ldaps://ldap.hochschule-trier.de:636/dc=unix,dc=fh-trier,dc=de
-LDAP_BACKEND_FILTER=(\&(objectClass=validAccount)(employeeType=STAFF))
+LDAP_BACKEND_URI=ldaps://ldap.example.com:636/dc=example,dc=com
+LDAP_BACKEND_FILTER=(\&(objectClass=posixAccount)(employeeType=staff))
 LDAP_DEBUG=256
 ```
 
