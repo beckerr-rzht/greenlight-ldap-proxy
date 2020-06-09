@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  app:
+    entrypoint: [bin/start]
+    image: bigbluebutton/greenlight:v2
+    container_name: greenlight-v2
+    env_file: .env
+    restart: always
+    ports:
+      - 127.0.0.1:5000:80
+# When using external logging
+#    logging:
+#      driver: $LOG_DRIVER
+#      options:
+#        syslog-address: $LOG_ADDRESS
+#        tag: $LOG_TAG
+    volumes:
+      - ./log:/usr/src/app/log
+# When using sqlite3 as the database
+#      - ./db/production:/usr/src/app/db/production
+# When using postgresql as the database
+    links:
+      - db
+      - ldap
+
+  db:
+    image: postgres:9.5
+    restart: always
+    ports:
+      - 127.0.0.1:5432:5432
+    volumes:
+      - ./db/production:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+
+  ldap:
+    restart: always
+    build: ldap-proxy
+    environment:
+      - LDAP_BACKEND_URI=${LDAP_BACKEND_URI}
+      - LDAP_BASE=${LDAP_BASE}
+      - LDAP_FILTER=${LDAP_BACKEND_FILTER}
+      - LDAP_BIND_DN=${LDAP_BIND_DN}
+      - LDAP_PASSWORD=${LDAP_PASSWORD}
+      - LDAP_DEBUG=${LDAP_DEBUG}
+    volumes:
+      - ./ldap-proxy/slapd.conf.t:/etc/openldap/slapd.conf.t:ro
